@@ -1,13 +1,13 @@
 package com.ss.easy.bank.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "customer")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder(builderMethodName = "builder", setterPrefix = "with")
 public class Customer {
     @Id

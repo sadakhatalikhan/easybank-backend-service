@@ -36,7 +36,7 @@ public class SecurityConfig {
         // http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll()); this will deny all the requests
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/accounts", "/balance", "/cards", "/loans").authenticated());
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/notice", "/contacts").permitAll());
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/notice", "/contacts", "/create/user").permitAll());
         http.formLogin(withDefaults()); // default form login page will appear
         http.httpBasic(withDefaults()); // default basic http type will be used
         // using below code we can disable the formLogin and httpBasic
