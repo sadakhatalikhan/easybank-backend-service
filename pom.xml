@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ss.easy.bank</groupId>
-	<artifactId>easybank-backend-app</artifactId>
+	<artifactId>easybank-backend-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ss1-easybank-backend-app</name>
+	<name>ss1-easybank-backend-service</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

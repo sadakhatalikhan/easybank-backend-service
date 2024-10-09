@@ -7,17 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
-
-import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -36,8 +29,6 @@ public class SecurityConfig {
      */
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        // http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());  this will allow all the requests
-        // http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll()); this will deny all the requests
         http.sessionManagement(smc -> smc.sessionFixation(sf -> sf.changeSessionId()) // this changeSessionId will be the default
                 .invalidSessionUrl("/invalidSession").maximumSessions(3).maxSessionsPreventsLogin(true));
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
@@ -45,58 +36,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/accounts", "/balance", "/cards", "/loans").authenticated());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/notice", "/contacts", "/create/user", "/invalidSession").permitAll());
         http.formLogin(withDefaults()); // default form login page will appear
-       // http.httpBasic(withDefaults()); // default basic http type will be used
-        // Below statement is used to customized authentication entry point
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
-        // using below code we can disable the formLogin and httpBasic
-        // http.formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.disable());
-        // http.httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable());
         return http.build();
     }
-
-    /**
-     * This method is an example of InMemoryUserDetailsManager.
-     * Using this we can configure multiple users to access our protected resources.
-     * This is not recommended for production application.
-     * <p>
-     * Note: Before restart the application remove below two properties from application.properties file.
-     * 1. spring.security.user.name
-     * 2. spring.security.user.password
-     * <p>
-     * In password I have added the noop to bypass the password encoding.
-     *
-     * @return
-     */
-   /* @Bean
-    public UserDetailsService userDetailsService() {
-        // Below two commented line for the plain password
-        // UserDetails user = User.withUsername("user").password("{noop}12345").authorities("read").build();
-        // UserDetails admin = User.withUsername("admin").password("{noop}67890").authorities("read").build();
-
-        // Below is an example for the Bcrypt password encoder
-        UserDetails user = User.withUsername("user")
-                .password("{bcrypt}$2a$12$sKqMhK5enr6Yz8k/0JexBO7Bk/tGTDStr3/fyWpnAX5DzbpEJeE12") // easybank@12345
-                .authorities("read")
-                .build();
-        UserDetails admin = User.withUsername("admin")
-                .password("{bcrypt}$2a$12$k9p.uYaZP2LKWyVLCNBLXutjWeO34l8uqEPU3T0JhQkPWKqkoiTPy") // easybank@67890
-                .authorities("admin")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
-    }*/
-
-    /**
-     * This bean is only for the JDBC user details manager.
-     * If we're using customer user details validation then we need to comment this bean.
-     *
-     * @param source
-     * @return
-     */
-    /*@Bean
-    public UserDetailsService userDetailsService(DataSource source){
-        return new JdbcUserDetailsManager(source);
-    }*/
 
     /**
      * This bean is used to encode the password.
