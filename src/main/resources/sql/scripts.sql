@@ -47,6 +47,34 @@ CREATE TABLE `account_transactions` (
   CONSTRAINT `acct_user_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `authorities` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `customer_id` int NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `customer_id` (`customer_id`),
+  CONSTRAINT `authorities_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
+);
+
+INSERT INTO `authorities` (`customer_id`, `name`)
+ VALUES (1, 'VIEWACCOUNT');
+
+INSERT INTO `authorities` (`customer_id`, `name`)
+ VALUES (1, 'VIEWCARDS');
+
+ INSERT INTO `authorities` (`customer_id`, `name`)
+  VALUES (1, 'VIEWLOANS');
+
+ INSERT INTO `authorities` (`customer_id`, `name`)
+   VALUES (1, 'VIEWBALANCE');
+
+DELETE FROM `authorities`;
+
+ INSERT INTO `authorities` (`customer_id`, `name`)
+  VALUES (1, 'ROLE_USER');
+
+ INSERT INTO `authorities` (`customer_id`, `name`)
+  VALUES (1, 'ROLE_ADMIN');
 
 
 INSERT INTO `account_transactions` (`transaction_id`, `account_number`, `customer_id`, `transaction_dt`, `transaction_summary`, `transaction_type`,`transaction_amt`,

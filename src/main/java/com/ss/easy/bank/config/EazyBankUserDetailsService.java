@@ -12,21 +12,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * This class is used to implement the custom validation
- */
 @Service
 @RequiredArgsConstructor
-public class EasybankUserDetailsService implements UserDetailsService {
+public class EazyBankUserDetailsService implements UserDetailsService {
 
     private final CustomerRepository customerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not found for the given user: " + username));
-        List<GrantedAuthority> authorites = List.of(new SimpleGrantedAuthority(customer.getRole()));
-        return new User(customer.getEmail(), customer.getPwd(), authorites);
+        Customer customer = customerRepository.findByEmail(username).orElseThrow(() -> new
+                UsernameNotFoundException("User details not found for the user: " + username));
+        List<GrantedAuthority> authorities = customer.getAuthorities()
+                .stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
+        return new User(customer.getEmail(), customer.getPwd(), authorities);
     }
 }
+

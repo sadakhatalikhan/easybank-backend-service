@@ -3,13 +3,16 @@ package com.ss.easy.bank.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
+@Builder
 public class Customer {
 
     @Id
@@ -32,5 +35,8 @@ public class Customer {
     @Column(name = "create_dt")
     @JsonIgnore
     private Date createDt;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private Set<Authority> authorities;
 
 }
